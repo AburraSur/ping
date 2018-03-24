@@ -43,14 +43,14 @@ class PingMessage {
     /*
 	*En esta función se crea el mensaje PING_MESSAGE para enviar al broker
 	*/	
-	public function call($n) {
+	public function call($command) {
         $this->response = null;
 		
 		/*Se crea un identificador del mensaje para luego ser comparado en la respuesta recibida*/
         $this->corr_id = uniqid();
 		
 		/*Se parametriza el mensaje que se va a enviar por medio del AMQPMessage*/
-        $msg = new AMQPMessage((string) $n,array('correlation_id' => $this->corr_id,'reply_to' => $this->callback_queue));
+        $msg = new AMQPMessage((string) $command,array('correlation_id' => $this->corr_id,'reply_to' => $this->callback_queue));
 		/*Se publica la peticion al broker*/
         $this->channel->basic_publish($msg, '', 'rpc_queue');
 		
@@ -66,7 +66,7 @@ $command = $_GET['command'];
 /*Se crea una nueva instancia de la clase PingMessage y se realiza el llamado con la funcion call*/
 $ping_rpc = new PingMessage();
 $response = $ping_rpc->call($command);
-echo " [.] Got ", $response, "\n";
+echo "Respuesta ", $response, "\n";
 //var_dump($response);
 
 ?>
